@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SJCE-STEP Futurise 2025 | Registration</title>
+    <meta name="description" content="Register for SJCE-STEP Futurise 2025 - Shaping the future with quantum computing, space tech, healthtech, and AI">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="background-effects">
+            <div class="circuit-pattern"></div>
+            <div class="gradient-overlay"></div>
+        </div>
+        
+        <div class="content">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <img src="SJCE-STEP Logo.png" alt="SJCE-STEP" class="main-logo">
+                <h1 class="event-title">
+                    <span class="title-line">FUTURISE</span>
+                    <span class="title-line gradient-text">2025</span>
+                </h1>
+                <p class="event-subtitle">Shape the Future with Cutting-Edge Technology</p>
+            </div>
+
+            <!-- Registration Form -->
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Register Now</h2>
+                    <p>Join us in exploring quantum computing, space tech, healthtech, and AI innovations</p>
+                </div>
+                
+                <form id="registrationForm" class="registration-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select your category</option>
+                            <option value="student">Student</option>
+                            <option value="startup">Startup</option>
+                            <option value="university">University</option>
+                            <option value="researcher">Researcher</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-button">
+                        <span>Register for Futurise 2025</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </form>
+                
+                <div id="successMessage" class="success-message" style="display: none;">
+                    <h3>Registration Successful!</h3>
+                    <p>Thank you for registering. We'll contact you soon with event details.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-blue: #00d4ff;
+    --electric-blue: #0099ff;
+    --neon-purple: #8b5cf6;
+    --deep-navy: #0a0a1a;
+    --dark-bg: #111827;
+    --white: #ffffff;
+    --light-gray: #f8fafc;
+    --text-gray: #64748b;
+    --gradient-primary: linear-gradient(135deg, var(--primary-blue), var(--neon-purple));
+    --gradient-dark: linear-gradient(135deg, var(--deep-navy), var(--dark-bg));
+    --font-primary: 'Poppins', sans-serif;
+}
+
+body {
+    font-family: var(--font-primary);
+    line-height: 1.6;
+    color: var(--white);
+    background: var(--deep-navy);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Main Container */
+.main-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 40px 20px;
+}
+
+.background-effects {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.content {
+    max-width: 900px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+/* Logo Section */
+.logo-section {
+    text-align: center;
+    padding: 40px;
+}
+
+.main-logo {
+    max-width: 200px;
+    height: auto;
+    margin-bottom: 30px;
+    filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.3));
+}
+
+.event-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 0.9;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+}
+
+.title-line {
+    display: block;
+}
+
+.gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+}
+
+.event-subtitle {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--text-gray);
+    margin-bottom: 20px;
+}
+
+/* Form Container */
+.form-container {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--primary-blue);
+}
+
+.form-header p {
+    color: var(--text-gray);
+    font-size: 1rem;
+}
+
+/* Background Effects */
+.circuit-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+        linear-gradient(45deg, transparent 30%, rgba(0, 212, 255, 0.05) 50%, transparent 70%);
+    animation: circuitFlow 10s ease-in-out infinite;
+}
+
+.gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-dark);
+    opacity: 0.8;
+}
+
+
+
+/* Form Styles */
+.registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: var(--primary-blue);
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select {
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 10px;
+    color: var(--white);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.form-group input::placeholder {
+    color: var(--text-gray);
+}
+
+.form-group select option {
+    background: var(--dark-bg);
+    color: var(--white);
+}
+
+.submit-button {
+    padding: 18px 40px;
+    background: var(--gradient-primary);
+    color: var(--white);
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(0, 212, 255, 0.3);
+}
+
+.submit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.success-message {
+    text-align: center;
+    padding: 30px;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 15px;
+    color: #22c55e;
+}
+
+.success-message h3 {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+
+/* Animations */
+@keyframes circuitFlow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-20px) rotate(120deg); }
+    66% { transform: translateY(10px) rotate(240deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        max-width: 500px;
+    }
+    
+    .logo-section {
+        padding: 20px;
+    }
+    
+    .main-logo {
+        max-width: 150px;
+    }
+    
+    .event-title {
+        font-size: clamp(2rem, 8vw, 3rem);
+    }
+    
+    .form-container {
+        padding: 30px;
+    }
+    
+    .main-container {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-container {
+        padding: 15px;
+    }
+    
+    .form-container {
+        padding: 25px;
+    }
+    
+    .logo-section {
+        padding: 15px;
+    }
+    
+    .main-logo {
+        max-width: 120px;
+    }
+    
+    .event-title {
+        font-size: clamp(1.8rem, 10vw, 2.5rem);
+    }
+    
+    .form-header h2 {
+        font-size: 1.5rem;
+    }
+}

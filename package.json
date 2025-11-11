@@ -1,0 +1,40 @@
+{
+  "name": "sjce-step-futurise-2025",
+  "version": "1.0.0",
+  "description": "SJCE-STEP Futurise 2025 Landing Page - A futuristic event registration page",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "build": "echo 'No build step required - static site'",
+    "deploy": "echo 'Ready for deployment to any static hosting service'"
+  },
+  "keywords": [
+    "sjce-step",
+    "futurise",
+    "2025",
+    "technology",
+    "event",
+    "landing-page",
+    "quantum-computing",
+    "space-tech",
+    "healthtech",
+    "ai"
+  ],
+  "author": "SJCE-STEP",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sjce-step/futurise-2025-landing"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
