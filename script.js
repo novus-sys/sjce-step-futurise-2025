@@ -110,6 +110,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 100);
 
                 // Download brochure PDF after successful submission
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    // Update success message for mobile
+                    setTimeout(() => {
+                        successMessage.innerHTML = `
+                            <h3>Registration Successful!</h3>
+                            <p>Thank you for registering! Opening your brochure...</p>
+                        `;
+                    }, 500);
+                }
+                
                 setTimeout(() => {
                     downloadBrochurePDF();
                 }, 1500);
@@ -316,13 +328,26 @@ async function downloadBrochurePDF() {
                 const response = await fetch(urlData.publicUrl, { method: 'HEAD' });
                 if (response.ok) {
                     // File exists and is accessible, proceed with download
-                    const link = document.createElement('a');
-                    link.href = urlData.publicUrl;
-                    link.download = 'SJCE-STEP-Futurise-2025-Brochure.pdf';
-                    link.target = '_blank';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    console.log('File accessible, initiating download...');
+                    
+                    // Mobile-friendly download approach
+                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                    
+                    if (isMobile) {
+                        // For mobile devices, open in new tab/window
+                        console.log('Mobile device detected, opening in new tab');
+                        window.open(urlData.publicUrl, '_blank');
+                    } else {
+                        // For desktop, use download attribute
+                        const link = document.createElement('a');
+                        link.href = urlData.publicUrl;
+                        link.download = 'SJCE-STEP-Futurise-2025-Brochure.pdf';
+                        link.target = '_blank';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
+                    
                     console.log('Brochure download initiated successfully via public URL');
                     return;
                 } else {
@@ -394,16 +419,33 @@ async function downloadBrochurePDF() {
 // Helper function to show download errors with better UX
 function showDownloadError(message) {
     const successMessage = document.getElementById('successMessage');
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     if (successMessage) {
-        successMessage.innerHTML = `
-            <h3>Download Issue</h3>
-            <p>${message}</p>
-            <p><small>Your registration was successful. We'll email you the brochure shortly.</small></p>
-        `;
-        successMessage.style.background = 'rgba(239, 68, 68, 0.1)';
-        successMessage.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-        successMessage.style.color = '#ef4444';
+        if (isMobile) {
+            successMessage.innerHTML = `
+                <h3>Registration Successful!</h3>
+                <p>Thank you for registering! Your brochure should open in a new tab.</p>
+                <p><small>If the brochure didn't open, we'll email it to you shortly.</small></p>
+            `;
+            successMessage.style.background = 'rgba(34, 197, 94, 0.1)';
+            successMessage.style.borderColor = 'rgba(34, 197, 94, 0.3)';
+            successMessage.style.color = '#22c55e';
+        } else {
+            successMessage.innerHTML = `
+                <h3>Download Issue</h3>
+                <p>${message}</p>
+                <p><small>Your registration was successful. We'll email you the brochure shortly.</small></p>
+            `;
+            successMessage.style.background = 'rgba(239, 68, 68, 0.1)';
+            successMessage.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+            successMessage.style.color = '#ef4444';
+        }
     } else {
-        alert(message);
+        if (isMobile) {
+            alert('Registration successful! The brochure should open in a new tab.');
+        } else {
+            alert(message);
+        }
     }
 }
