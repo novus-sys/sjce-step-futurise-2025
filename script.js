@@ -303,54 +303,66 @@ async function downloadBrochurePDF() {
     try {
         console.log('Attempting to download brochure PDF...');
         
-        // First, check if the file exists by listing files in the bucket
-        const { data: fileList, error: listError } = await supabase.storage
-            .from('brochure')
-            .list('', { limit: 100 });
-
-        if (listError) {
-            console.error('Error listing files in bucket:', listError);
-            showDownloadError('Unable to access brochure files. Please contact support.');
-            return;
-        }
-
-        console.log('Files in brochures bucket:', fileList);
-        
-        // Check if our PDF file exists
-        const pdfFile = fileList.find(file => file.name === 'futurise-2025-brochure.pdf');
-        if (!pdfFile) {
-            console.error('PDF file not found in bucket');
-            showDownloadError('Brochure file is not available yet. Please contact support or try again later.');
-            return;
-        }
-
-        // Try to get the public URL first (for public buckets)
+        // Direct approach: Get the public URL and try to download
         const { data: urlData } = supabase.storage
             .from('brochure')
             .getPublicUrl('futurise-2025-brochure.pdf');
 
         if (urlData && urlData.publicUrl) {
             console.log('Using public URL for download:', urlData.publicUrl);
-            // Use public URL for direct download
-            const link = document.createElement('a');
-            link.href = urlData.publicUrl;
-            link.download = 'SJCE-STEP-Futurise-2025-Brochure.pdf';
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            console.log('Brochure download initiated successfully via public URL');
-            return;
+            
+            // Test if the file is accessible by trying to fetch it
+            try {
+                const response = await fetch(urlData.publicUrl, { method: 'HEAD' });
+                if (response.ok) {
+                    // File exists and is accessible, proceed with download
+                    const link = document.createElement('a');
+                    link.href = urlData.publicUrl;
+                    link.download = 'SJCE-STEP-Futurise-2025-Brochure.pdf';
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    console.log('Brochure download initiated successfully via public URL');
+                    return;
+                } else {
+                    console.error('File not accessible via public URL, status:', response.status);
+                }
+            } catch (fetchError) {
+                console.error('Error testing file accessibility:', fetchError);
+            }
         }
 
-        // Fallback: Download the file as blob
-        console.log('Attempting blob download...');
+        // Fallback: Try blob download with authentication
+        console.log('Attempting authenticated blob download...');
         const { data, error } = await supabase.storage
             .from('brochure')
             .download('futurise-2025-brochure.pdf');
 
         if (error) {
             console.error('Error downloading PDF:', error);
+            
+            // If it's a permissions error, try creating a signed URL
+            if (error.message.includes('permission') || error.message.includes('policy')) {
+                console.log('Trying signed URL approach...');
+                const { data: signedUrlData, error: signedError } = await supabase.storage
+                    .from('brochure')
+                    .createSignedUrl('futurise-2025-brochure.pdf', 60); // 60 seconds expiry
+
+                if (!signedError && signedUrlData) {
+                    console.log('Using signed URL for download:', signedUrlData.signedUrl);
+                    const link = document.createElement('a');
+                    link.href = signedUrlData.signedUrl;
+                    link.download = 'SJCE-STEP-Futurise-2025-Brochure.pdf';
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    console.log('Brochure download initiated successfully via signed URL');
+                    return;
+                }
+            }
+            
             showDownloadError(`Download failed: ${error.message}. Please contact support.`);
             return;
         }
