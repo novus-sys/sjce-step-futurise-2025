@@ -30,46 +30,60 @@
                 <p class="event-subtitle">Shape the Future with Cutting-Edge Technology</p>
             </div>
 
-            <!-- Registration Form -->
+            <!-- Download Brochure Section -->
             <div class="form-container">
-                <div class="form-header">
-                    <h2>Register Now</h2>
-                    <p>Be part of the future. Connect with innovators, discover breakthrough technologies, and shape tomorrow.</p>
-                </div>
-                
-                <form id="registrationForm" class="registration-form">
-                    <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" required>
+                <div id="brochureSection" class="brochure-section">
+                    <div class="form-header">
+                        <h2>Get Event Brochure</h2>
+                        <p>Discover the future of technology. Download our comprehensive event brochure with all details.</p>
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="category">Category</label>
-                        <select id="category" name="category" required>
-                            <option value="">Select your category</option>
-                            <option value="student">Student</option>
-                            <option value="startup">Startup</option>
-                            <option value="university">University</option>
-                            <option value="researcher">Researcher</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="submit-button">
-                        <span>Register for Futurise 2025</span>
+                    <button id="downloadBrochureBtn" class="download-button">
+                        <span>📄 Download Brochure</span>
                         <div class="button-glow"></div>
                     </button>
-                </form>
-                
-                <div id="successMessage" class="success-message" style="display: none;">
-                    <h3>Registration Successful!</h3>
-                    <p>Thank you for registering. We'll contact you soon with event details.</p>
+                </div>
+
+                <!-- Registration Form (Initially Hidden) -->
+                <div id="registrationSection" class="registration-section" style="display: none;">
+                    <div class="form-header">
+                        <h2>Complete Registration</h2>
+                        <p>Fill in your details below to download the brochure and stay updated about Futurise 2025.</p>
+                    </div>
+                    
+                    <form id="registrationForm" class="registration-form">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" name="category" required>
+                                <option value="">Select your category</option>
+                                <option value="student">Student</option>
+                                <option value="startup">Startup</option>
+                                <option value="university">University</option>
+                                <option value="researcher">Researcher</option>
+                                <option value="investor">Investor</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-button">
+                            <span>Submit & Download Brochure</span>
+                            <div class="button-glow"></div>
+                        </button>
+                    </form>
+                    
+                    <div id="successMessage" class="success-message" style="display: none;">
+                        <h3>Download Starting...</h3>
+                        <p>Thank you for registering! Your brochure download will begin shortly.</p>
+                    </div>
                 </div>
             </div>
         </div>

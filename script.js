@@ -7,10 +7,27 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Form handling and interactions
 document.addEventListener('DOMContentLoaded', function() {
-
-    // Form submission handling
+    // Get DOM elements
+    const downloadBrochureBtn = document.getElementById('downloadBrochureBtn');
+    const brochureSection = document.getElementById('brochureSection');
+    const registrationSection = document.getElementById('registrationSection');
     const registrationForm = document.getElementById('registrationForm');
     const successMessage = document.getElementById('successMessage');
+
+    // Download brochure button click handler
+    if (downloadBrochureBtn) {
+        downloadBrochureBtn.addEventListener('click', function() {
+            // Hide brochure section and show registration form
+            brochureSection.style.display = 'none';
+            registrationSection.style.display = 'block';
+            
+            // Smooth scroll to form if needed
+            registrationSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        });
+    }
 
     if (registrationForm) {
         registrationForm.addEventListener('submit', async function(e) {
@@ -73,7 +90,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     successMessage.style.transform = 'translateY(0)';
                 }, 100);
 
-                // Track successful submission (you can add analytics here)
+                // Download brochure PDF after successful submission
+                setTimeout(() => {
+                    downloadBrochurePDF();
+                }, 1500);
+
+                // Track successful submission
                 console.log('Registration successful for:', data.email);
 
             } catch (error) {
@@ -254,5 +276,37 @@ function hideFieldError(field) {
     const existingError = field.parentNode.querySelector('.field-error');
     if (existingError) {
         existingError.remove();
+    }
+}
+
+// Function to download brochure PDF from Supabase storage
+async function downloadBrochurePDF() {
+    try {
+        // Get the PDF file from Supabase storage
+        const { data, error } = await supabase.storage
+            .from('brochures')
+            .download('futurise-2025-brochure.pdf');
+
+        if (error) {
+            console.error('Error downloading PDF:', error);
+            alert('Sorry, there was an error downloading the brochure. Please try again later.');
+            return;
+        }
+
+        // Create a blob URL and trigger download
+        const blob = new Blob([data], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'SJCE-STEP-Futurise-2025-Brochure.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        console.log('Brochure download initiated successfully');
+    } catch (error) {
+        console.error('Unexpected error during PDF download:', error);
+        alert('Sorry, there was an error downloading the brochure. Please try again later.');
     }
 }
