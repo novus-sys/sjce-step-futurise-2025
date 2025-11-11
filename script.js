@@ -55,16 +55,35 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error('Please fill in all required fields');
                 }
 
-                // Validate email format
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                // Enhanced email validation
+                const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
                 if (!emailRegex.test(data.email)) {
-                    throw new Error('Please enter a valid email address');
+                    throw new Error('Please enter a valid email address (e.g., user@example.com)');
                 }
 
-                // Validate phone format (basic validation)
-                const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-                if (!phoneRegex.test(data.phone.replace(/[\s\-\(\)]/g, ''))) {
-                    throw new Error('Please enter a valid phone number');
+                // Enhanced phone validation - supports international formats
+                const cleanPhone = data.phone.replace(/[\s\-\(\)\+]/g, '');
+                const phoneRegex = /^[0-9]{10,15}$/;
+                if (!phoneRegex.test(cleanPhone)) {
+                    throw new Error('Please enter a valid phone number (10-15 digits, international format supported)');
+                }
+
+                // Additional email checks
+                if (data.email.length > 254) {
+                    throw new Error('Email address is too long');
+                }
+                
+                const emailParts = data.email.split('@');
+                if (emailParts[0].length > 64) {
+                    throw new Error('Email username part is too long');
+                }
+
+                // Check for common email typos
+                const commonDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com'];
+                const domain = emailParts[1].toLowerCase();
+                const suspiciousDomains = ['gmial.com', 'yahooo.com', 'hotmial.com', 'outlok.com'];
+                if (suspiciousDomains.includes(domain)) {
+                    throw new Error('Please check your email address for typos');
                 }
 
                 // Submit to Supabase
@@ -282,14 +301,63 @@ function hideFieldError(field) {
 // Function to download brochure PDF from Supabase storage
 async function downloadBrochurePDF() {
     try {
-        // Get the PDF file from Supabase storage
+        console.log('Attempting to download brochure PDF...');
+        
+        // First, check if the file exists by listing files in the bucket
+        const { data: fileList, error: listError } = await supabase.storage
+            .from('brochure')
+            .list('', { limit: 100 });
+
+        if (listError) {
+            console.error('Error listing files in bucket:', listError);
+            showDownloadError('Unable to access brochure files. Please contact support.');
+            return;
+        }
+
+        console.log('Files in brochures bucket:', fileList);
+        
+        // Check if our PDF file exists
+        const pdfFile = fileList.find(file => file.name === 'futurise-2025-brochure.pdf');
+        if (!pdfFile) {
+            console.error('PDF file not found in bucket');
+            showDownloadError('Brochure file is not available yet. Please contact support or try again later.');
+            return;
+        }
+
+        // Try to get the public URL first (for public buckets)
+        const { data: urlData } = supabase.storage
+            .from('brochure')
+            .getPublicUrl('futurise-2025-brochure.pdf');
+
+        if (urlData && urlData.publicUrl) {
+            console.log('Using public URL for download:', urlData.publicUrl);
+            // Use public URL for direct download
+            const link = document.createElement('a');
+            link.href = urlData.publicUrl;
+            link.download = 'SJCE-STEP-Futurise-2025-Brochure.pdf';
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            console.log('Brochure download initiated successfully via public URL');
+            return;
+        }
+
+        // Fallback: Download the file as blob
+        console.log('Attempting blob download...');
         const { data, error } = await supabase.storage
-            .from('brochures')
+            .from('brochure')
             .download('futurise-2025-brochure.pdf');
 
         if (error) {
             console.error('Error downloading PDF:', error);
-            alert('Sorry, there was an error downloading the brochure. Please try again later.');
+            showDownloadError(`Download failed: ${error.message}. Please contact support.`);
+            return;
+        }
+
+        if (!data) {
+            console.error('No data received from download');
+            showDownloadError('No file data received. Please contact support.');
             return;
         }
 
@@ -304,9 +372,26 @@ async function downloadBrochurePDF() {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
 
-        console.log('Brochure download initiated successfully');
+        console.log('Brochure download initiated successfully via blob');
     } catch (error) {
         console.error('Unexpected error during PDF download:', error);
-        alert('Sorry, there was an error downloading the brochure. Please try again later.');
+        showDownloadError(`Unexpected error: ${error.message}. Please contact support.`);
+    }
+}
+
+// Helper function to show download errors with better UX
+function showDownloadError(message) {
+    const successMessage = document.getElementById('successMessage');
+    if (successMessage) {
+        successMessage.innerHTML = `
+            <h3>Download Issue</h3>
+            <p>${message}</p>
+            <p><small>Your registration was successful. We'll email you the brochure shortly.</small></p>
+        `;
+        successMessage.style.background = 'rgba(239, 68, 68, 0.1)';
+        successMessage.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+        successMessage.style.color = '#ef4444';
+    } else {
+        alert(message);
     }
 }
