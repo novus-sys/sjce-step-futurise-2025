@@ -5,9 +5,7 @@
   "main": "index.html",
   "scripts": {
     "start": "python -m http.server 8000",
-    "dev": "python -m http.server 8000",
-    "build": "echo 'No build step required - static site'",
-    "deploy": "echo 'Ready for deployment to any static hosting service'"
+    "dev": "python -m http.server 8000"
   },
   "keywords": [
     "sjce-step",
