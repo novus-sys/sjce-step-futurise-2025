@@ -4,7 +4,6 @@
   "installCommand": null,
   "devCommand": null,
   "framework": null,
-  "functions": {},
   "routes": [
     {
       "src": "/(.*)",
