@@ -202,20 +202,21 @@ body {
 .form-group input,
 .form-group select {
     padding: 15px 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    color: var(--white);
+    color: var(--deep-navy);
     font-size: 1rem;
     transition: all 0.3s ease;
+    font-family: var(--font-primary);
 }
 
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--deep-navy);
+    box-shadow: 0 0 10px rgba(13, 42, 71, 0.2);
+    background: rgba(255, 255, 255, 1);
 }
 
 .form-group input::placeholder {
@@ -223,8 +224,8 @@ body {
 }
 
 .form-group select option {
-    background: var(--dark-bg);
-    color: var(--white);
+    background: white;
+    color: var(--deep-navy);
 }
 
 .submit-button {
