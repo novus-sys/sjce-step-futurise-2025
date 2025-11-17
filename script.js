@@ -310,109 +310,36 @@ function hideFieldError(field) {
     }
 }
 
-// Function to download brochure PDF from Supabase storage
-async function downloadBrochurePDF() {
+// Function to download brochure PDF from local assets folder
+function downloadBrochurePDF() {
     try {
-        console.log('Attempting to download brochure PDF...');
+        console.log('Attempting to download brochure PDF from assets...');
         
-        // Direct approach: Get the public URL and try to download
-        const { data: urlData } = supabase.storage
-            .from('brochure')
-            .getPublicUrl('futurise-2025-brochure.pdf');
-
-        if (urlData && urlData.publicUrl) {
-            console.log('Using public URL for download:', urlData.publicUrl);
-            
-            // Test if the file is accessible by trying to fetch it
-            try {
-                const response = await fetch(urlData.publicUrl, { method: 'HEAD' });
-                if (response.ok) {
-                    // File exists and is accessible, proceed with download
-                    console.log('File accessible, initiating download...');
-                    
-                    // Mobile-friendly download approach
-                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                    
-                    if (isMobile) {
-                        // For mobile devices, open in new tab/window
-                        console.log('Mobile device detected, opening in new tab');
-                        window.open(urlData.publicUrl, '_blank');
-                    } else {
-                        // For desktop, use download attribute
-                        const link = document.createElement('a');
-                        link.href = urlData.publicUrl;
-                        link.download = 'SJCE-STEP-Futurise-2025-Brochure.pdf';
-                        link.target = '_blank';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    }
-                    
-                    console.log('Brochure download initiated successfully via public URL');
-                    return;
-                } else {
-                    console.error('File not accessible via public URL, status:', response.status);
-                }
-            } catch (fetchError) {
-                console.error('Error testing file accessibility:', fetchError);
-            }
+        // Path to the PDF in the assets folder
+        const pdfPath = './assets/Brochure.pdf';
+        
+        // Mobile-friendly download approach
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            // For mobile devices, open in new tab/window
+            console.log('Mobile device detected, opening PDF in new tab');
+            window.open(pdfPath, '_blank');
+        } else {
+            // For desktop, use download attribute
+            const link = document.createElement('a');
+            link.href = pdfPath;
+            link.download = 'SJCE-STEP-Brochure.pdf';
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
-
-        // Fallback: Try blob download with authentication
-        console.log('Attempting authenticated blob download...');
-        const { data, error } = await supabase.storage
-            .from('brochure')
-            .download('futurise-2025-brochure.pdf');
-
-        if (error) {
-            console.error('Error downloading PDF:', error);
-            
-            // If it's a permissions error, try creating a signed URL
-            if (error.message.includes('permission') || error.message.includes('policy')) {
-                console.log('Trying signed URL approach...');
-                const { data: signedUrlData, error: signedError } = await supabase.storage
-                    .from('brochure')
-                    .createSignedUrl('futurise-2025-brochure.pdf', 60); // 60 seconds expiry
-
-                if (!signedError && signedUrlData) {
-                    console.log('Using signed URL for download:', signedUrlData.signedUrl);
-                    const link = document.createElement('a');
-                    link.href = signedUrlData.signedUrl;
-                    link.download = 'SJCE-STEP-Futurise-2025-Brochure.pdf';
-                    link.target = '_blank';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    console.log('Brochure download initiated successfully via signed URL');
-                    return;
-                }
-            }
-            
-            showDownloadError(`Download failed: ${error.message}. Please contact support.`);
-            return;
-        }
-
-        if (!data) {
-            console.error('No data received from download');
-            showDownloadError('No file data received. Please contact support.');
-            return;
-        }
-
-        // Create a blob URL and trigger download
-        const blob = new Blob([data], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'SJCE-STEP-Futurise-2025-Brochure.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-
-        console.log('Brochure download initiated successfully via blob');
+        
+        console.log('Brochure download initiated successfully from local assets');
     } catch (error) {
-        console.error('Unexpected error during PDF download:', error);
-        showDownloadError(`Unexpected error: ${error.message}. Please contact support.`);
+        console.error('Error downloading PDF from assets:', error);
+        showDownloadError('Sorry, there was an error downloading the brochure. Please contact support.');
     }
 }
 
