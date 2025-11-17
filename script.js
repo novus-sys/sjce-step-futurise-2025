@@ -318,22 +318,66 @@ function downloadBrochurePDF() {
         // Path to the PDF in the assets folder
         const pdfPath = './assets/Brochure.pdf';
         
-        // Mobile-friendly download approach
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        // Enhanced mobile detection
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                         (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
+        
+        // Create download link
+        const link = document.createElement('a');
+        link.href = pdfPath;
+        link.target = '_blank';
         
         if (isMobile) {
-            // For mobile devices, open in new tab/window
-            console.log('Mobile device detected, opening PDF in new tab');
-            window.open(pdfPath, '_blank');
+            // For mobile devices, try multiple approaches
+            console.log('Mobile device detected, trying mobile-optimized download');
+            
+            // Method 1: Try direct download with download attribute
+            link.download = 'SJCE-STEP-Brochure.pdf';
+            link.setAttribute('download', 'SJCE-STEP-Brochure.pdf');
+            
+            // Add click handler for mobile
+            link.onclick = function(e) {
+                // Allow the default action but also try window.open as fallback
+                setTimeout(() => {
+                    if (!document.hidden) {
+                        // If page is still visible, the download might not have worked
+                        console.log('Fallback: Opening PDF in new window');
+                        window.open(pdfPath, '_blank', 'noopener,noreferrer');
+                    }
+                }, 100);
+                return true;
+            };
         } else {
             // For desktop, use download attribute
-            const link = document.createElement('a');
-            link.href = pdfPath;
+            console.log('Desktop device detected, using download attribute');
             link.download = 'SJCE-STEP-Brochure.pdf';
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+        }
+        
+        // Trigger the download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Additional mobile fallback
+        if (isMobile) {
+            setTimeout(() => {
+                // Show instructions for mobile users with direct link
+                const successMessage = document.getElementById('successMessage');
+                if (successMessage && successMessage.style.display !== 'none') {
+                    successMessage.innerHTML = `
+                        <h3>Brochure Ready!</h3>
+                        <p>Your brochure should open in a new tab. If it doesn't work:</p>
+                        <div style="margin: 15px 0;">
+                            <a href="${pdfPath}" target="_blank" download="SJCE-STEP-Brochure.pdf" 
+                               style="display: inline-block; padding: 10px 20px; background: var(--deep-navy); 
+                               color: white; text-decoration: none; border-radius: 25px; font-weight: 600;">
+                               📄 Direct Download Link
+                            </a>
+                        </div>
+                        <p><small>• Long-press the link above and select "Download"<br>• Or check your browser's downloads section</small></p>
+                    `;
+                }
+            }, 2000);
         }
         
         console.log('Brochure download initiated successfully from local assets');
